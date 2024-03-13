@@ -1,7 +1,17 @@
+from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Product
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+
+
+def home(request):
+    # Your logic for the home view
+    return render(request, 'product/home.html')
+
 
 
 def Base(request):
@@ -32,4 +42,24 @@ class ProductDeleteView(DeleteView):
     template_name = 'product/delete_product.html'
     success_url = reverse_lazy('product-list')
 
+
+class SearchView(ListView):
+    model = Product
+    template_name = "product/search.html"
+    context_object_name = "products"
+    
+    def get_queryset(self):
+        name = self.request.GET.get("name", "")
+        return self.model.objects.filter(name__contains=name)
+   
+   
+   
+class SignUpView(CreateView):
+    form_class = UserCreationForm
+    template_name = "registration/signup.html"   
+    success_url = reverse_lazy ("login")
+
+
+
+   
 
